@@ -33,11 +33,11 @@ public class Board extends JPanel {
     private boolean inGame;
     private int mines_left;
     private Image[] img;
-    private int mines = 40;
-    private int rows = 16;
-    private int cols = 16;
-    private int all_cells;
-    private JLabel statusbar;
+    private static int mines = 40;
+    private static int rows = 16;
+    private static int cols = 16;
+    private static int all_cells;
+    private static JLabel statusbar;
 
 
     public Board(JLabel statusbar) {
@@ -96,41 +96,41 @@ public class Board extends JPanel {
 
                 if (current_col > 0) { 
                     cell = position - 1 - cols;
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell >= 0)&&
+                         (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
                     cell = position - 1;
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell >= 0)&&
+                         (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
 
                     cell = position + cols - 1;
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell < all_cells)&&
+                         (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
                 }
 
                 cell = position - cols;
-                if (cell >= 0)
-                    if (field[cell] != COVERED_MINE_CELL)
+                if ((cell >= 0)&&
+                     (field[cell] != COVERED_MINE_CELL))
                         field[cell] += 1;
                 cell = position + cols;
-                if (cell < all_cells)
-                    if (field[cell] != COVERED_MINE_CELL)
+                if ((cell < all_cells)&&
+                     (field[cell] != COVERED_MINE_CELL))
                         field[cell] += 1;
 
                 if (current_col < (cols - 1)) {
                     cell = position - cols + 1;
-                    if (cell >= 0)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell >= 0)&&
+                        (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
                     cell = position + cols + 1;
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell < all_cells)&&
+                         (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
                     cell = position + 1;
-                    if (cell < all_cells)
-                        if (field[cell] != COVERED_MINE_CELL)
+                    if ((cell < all_cells)&&
+                         (field[cell] != COVERED_MINE_CELL))
                             field[cell] += 1;
                 }
             }
