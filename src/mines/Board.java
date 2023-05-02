@@ -37,7 +37,7 @@ public class Board extends JPanel {
     private static int rows = 16;
     private static int cols = 16;
     private static int all_cells;
-    private static JLabel statusbar;
+    private static final JLabel statusbar;
 
 
     public Board(JLabel statusbar) {
@@ -94,21 +94,23 @@ public class Board extends JPanel {
                 field[position] = COVERED_MINE_CELL;
                 i++;
 
-                if (current_col > 0) { 
-                    cell = position - 1 - cols;
-                    if ((cell >= 0)&&
-                         (field[cell] != COVERED_MINE_CELL))
-                            field[cell] += 1;
-                    cell = position - 1;
-                    if ((cell >= 0)&&
-                         (field[cell] != COVERED_MINE_CELL))
-                            field[cell] += 1;
+              if (current_col > 0 && cols != 0) { 
+    cell = position - 1 - cols;
+    if (cell >= 0 && field[cell] != COVERED_MINE_CELL) {
+        field[cell] += 1;
+    } 
+    cell = position - 1;
+    if (cell >= 0 && field[cell] != COVERED_MINE_CELL) {
+        field[cell] += 1;
+    } else if (cell < all_cells && field[cell] != COVERED_MINE_CELL) {
+        field[cell] += 1;
+    }
+    cell = position + cols - 1;
+    if (cell < all_cells && field[cell] != COVERED_MINE_CELL) {
+        field[cell] += 1;
+    }
+}
 
-                    cell = position + cols - 1;
-                    if ((cell < all_cells)&&
-                         (field[cell] != COVERED_MINE_CELL))
-                            field[cell] += 1;
-                }
 
                 cell = position - cols;
                 if ((cell >= 0)&&
