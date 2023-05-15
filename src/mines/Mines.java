@@ -15,7 +15,7 @@ public class Mines extends JFrame {
 
     
     public Mines() {
-    private JLabel statusbar;
+    private final JLabel statusbar;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
