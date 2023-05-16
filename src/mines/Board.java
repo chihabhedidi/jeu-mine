@@ -47,9 +47,8 @@ public class Board extends JPanel {
         img = new Image[NUM_IMAGES];
 
         for (int i = 0; i < NUM_IMAGES; i++) {
-            img[i] =
-                    (new ImageIcon(getClass().getClassLoader().getResource((i)
-                            + ".gif"))).getImage();
+           img[i] = (new ImageIcon(Thread.currentThread().getContextClassLoader().getResource((i) + ".gif"))).getImage();
+
         }
 
         setDoubleBuffered(true);
@@ -140,73 +139,83 @@ public class Board extends JPanel {
     }
 
 
-    public void find_empty_cells(int j) {
+  public void find_empty_cells(int j) {
+    int current_col = j % cols;
+    int cell;
 
-        int current_col = j % cols;
-        int cell;
-
-        if (current_col > 0) {
-            cell = j - cols - 1;
-            if (cell >= 0 && (field[cell] > MINE_CELL)) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
+    if (current_col > 0) {
+        cell = j - cols - 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
             }
+        }
 
-            cell = j - 1;
-            if (cell >= 0 && (field[cell] > MINE_CELL)) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
+        cell = j - 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
             }
+        }
 
-            cell = j + cols - 1;
-            if (cell < all_cells && (field[cell] > MINE_CELL)) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
-
+        cell = j + cols - 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
             }
-
-            cell = j - cols;
-            if (cell >= 0 && (field[cell] > MINE_CELL)) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
-            }
-
-            cell = j + cols;
-            if (cell < all_cells && (field[cell] > MINE_CELL)) {
-                field[cell] -= COVER_FOR_CELL;
-                if (field[cell] == EMPTY_CELL)
-                    find_empty_cells(cell);
-            }
-
-            if (current_col < (cols - 1)) {
-                cell = j - cols + 1;
-                if (cell >= 0 && (field[cell] > MINE_CELL)) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-                cell = j + cols + 1;
-                if (cell < all_cells && (field[cell] > MINE_CELL)) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-
-                cell = j + 1;
-                if (cell < all_cells && (field[cell] > MINE_CELL)) {
-                    field[cell] -= COVER_FOR_CELL;
-                    if (field[cell] == EMPTY_CELL)
-                        find_empty_cells(cell);
-                }
-            }
-
         }
     }
+
+    cell = j - cols;
+    if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+        field[cell] -= COVER_FOR_CELL;
+        if (field[cell] == EMPTY_CELL) {
+            find_empty_cells(cell);
+        }
+    }
+
+    cell = j + cols;
+    if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+        field[cell] -= COVER_FOR_CELL;
+        if (field[cell] == EMPTY_CELL) {
+            find_empty_cells(cell);
+        }
+    }
+
+    if (current_col < (cols - 1)) {
+        cell = j - cols + 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
+            }
+        }
+
+        cell = j + cols + 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
+            }
+        }
+
+        cell = j + 1;
+        if (isValidCell(cell) && field[cell] > MINE_CELL && field[cell] <= COVERED_MINE_CELL) {
+            field[cell] -= COVER_FOR_CELL;
+            if (field[cell] == EMPTY_CELL) {
+                find_empty_cells(cell);
+            }
+        }
+    }
+}
+
+private boolean isValidCell(int cell) {
+    return cell >= 0 && cell < all_cells;
+}
+
         public void paint(Graphics g){
 
             int cell = 0;
