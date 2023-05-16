@@ -62,9 +62,7 @@ public class Board extends JPanel {
 
 
     public void newGame() {
-        int current_col;
         int position;
-        int cell;
 
         inGame = true;
         mines_left = mines;
@@ -80,7 +78,6 @@ public class Board extends JPanel {
             position = random.nextInt(all_cells);
 
             if (field[position] != COVERED_MINE_CELL) {
-                current_col = position % cols;
                 field[position] = COVERED_MINE_CELL;
                 i++;
 
