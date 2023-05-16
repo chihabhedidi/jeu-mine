@@ -4,12 +4,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class Board extends JPanel {
     private static final long serialVersionUID = 6195235521361212179L;
@@ -23,6 +24,7 @@ public class Board extends JPanel {
     private static final int MINE_CELL = 9;
     private static final int COVERED_MINE_CELL = MINE_CELL + COVER_FOR_CELL;
     private static final int MARKED_MINE_CELL = COVERED_MINE_CELL + MARK_FOR_CELL;
+    public static final int COVERED_EMPTY_CELL = -1;
 
     private static final int DRAW_MINE = 9;
     private static final int DRAW_COVER = 10;
@@ -59,85 +61,54 @@ public class Board extends JPanel {
 
 
     public void newGame() {
-
-        Random random;
+        SecureRandom random = new SecureRandom();
         int current_col;
+        int position;
+        int cell;
 
-        int i = 0;
-        int position = 0;
-        int cell = 0;
-
-        random = new Random();
         inGame = true;
         mines_left = mines;
 
         all_cells = rows * cols;
         field = new int[all_cells];
-
-        for (i = 0; i < all_cells; i++)
-            field[i] = COVER_FOR_CELL;
+        Arrays.fill(field, COVER_FOR_CELL);
 
         statusbar.setText(Integer.toString(mines_left));
 
-
-        i = 0;
+        int i = 0;
         while (i < mines) {
+            position = random.nextInt(all_cells);
 
-            position = (int) (all_cells * random.nextDouble());
-
-            if ((position < all_cells) &&
-                    (field[position] != COVERED_MINE_CELL)) {
-
-
+            if (field[position] != COVERED_MINE_CELL) {
                 current_col = position % cols;
                 field[position] = COVERED_MINE_CELL;
                 i++;
 
-                if (current_col > 0 && cols != 0) {
-                    cell = position - 1 - cols;
-                    if (cell >= 0 && field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
-                    }
-                    cell = position - 1;
-                    if (cell >= 0 && field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
-                    } else if (cell < all_cells && field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
-                    }
-                    cell = position + cols - 1;
-                    if (cell < all_cells && field[cell] != COVERED_MINE_CELL) {
-                        field[cell] += 1;
-                    }
-                }
+                int[] neighbors = getNeighbors(position);
 
-
-                cell = position - cols;
-                if ((cell >= 0) &&
-                        (field[cell] != COVERED_MINE_CELL))
-                    field[cell] += 1;
-                cell = position + cols;
-                if ((cell < all_cells) &&
-                        (field[cell] != COVERED_MINE_CELL))
-                    field[cell] += 1;
-
-                if (current_col < (cols - 1)) {
-                    cell = position - cols + 1;
-                    if ((cell >= 0) &&
-                            (field[cell] != COVERED_MINE_CELL))
-                        field[cell] += 1;
-                    cell = position + cols + 1;
-                    if ((cell < all_cells) &&
-                            (field[cell] != COVERED_MINE_CELL))
-                        field[cell] += 1;
-                    cell = position + 1;
-                    if ((cell < all_cells) &&
-                            (field[cell] != COVERED_MINE_CELL))
-                        field[cell] += 1;
+                for (int neighbor : neighbors) {
+                    if (neighbor >= 0 && neighbor < all_cells && field[neighbor] != COVERED_MINE_CELL && field[neighbor] != COVERED_EMPTY_CELL) {
+                        field[neighbor] += 1;
+                    }
                 }
             }
         }
     }
 
+    private int[] getNeighbors(int position) {
+        int[] neighbors;
+        int current_col = position % cols;
+
+        if (current_col > 0 && current_col < cols - 1) {
+            neighbors = new int[]{position - 1 - cols, position - 1, position + cols - 1, position - cols, position + cols, position - cols + 1, position + cols + 1, position + 1};
+        } else if (current_col == 0) {
+            neighbors = new int[]{position - cols, position + cols, position - cols + 1, position + cols + 1, position + 1};
+        } else {
+            neighbors = new int[]{position - 1 - cols, position - 1, position + cols - 1, position - cols, position + cols};
+        }
+
+        return neighbors;
+    }
 
   public void find_empty_cells(int j) {
     int current_col = j % cols;
